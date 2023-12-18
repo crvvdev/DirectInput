@@ -5,6 +5,8 @@ namespace DirectInput
 {
     //////////////////////////////////////////////////////////////////////////
 
+    HANDLE h_DeviceHandle = INVALID_HANDLE_VALUE;
+
     static constexpr wchar_t s_SymName[] = LR"(\\.\{27314068-3117-4371-B7A5-A1750281ED67})";
 
     enum class IoCode : UINT32
@@ -35,43 +37,45 @@ namespace DirectInput
         UINT32 vDosCode     = NOERROR;
         UINT32 vSendCount   = 0u;
 
-        HANDLE vDevice = nullptr;
         for (;;)
         {
-            vDevice = CreateFile(
-                s_SymName,
-                FILE_ANY_ACCESS,
-                0,
-                nullptr,
-                OPEN_EXISTING,
-                FILE_ATTRIBUTE_DEVICE,
-                nullptr);
-            if (INVALID_HANDLE_VALUE == vDevice)
+            if (h_DeviceHandle == INVALID_HANDLE_VALUE)
             {
-                vDevice = nullptr;
+                h_DeviceHandle = CreateFile(
+                    s_SymName,
+                    FILE_ANY_ACCESS,
+                    0,
+                    nullptr,
+                    OPEN_EXISTING,
+                    FILE_ATTRIBUTE_DEVICE,
+                    nullptr);
 
-                vDosCode = GetLastError();
-                break;
+                if (INVALID_HANDLE_VALUE == h_DeviceHandle)
+                {
+                    printf("CreateFile failed %d\n", ::GetLastError());
+                    vDosCode = GetLastError();
+                    break;
+                }
             }
 
             auto vArgs = SendInputArgs { aInputCount, aInputBytes, (UINT64)aInputs };
 
             auto vReturnBytes = 0ul;
             if (!DeviceIoControl(
-                vDevice,
+                h_DeviceHandle,
                 (UINT32)IoCode::SendInput,
                 &vArgs, sizeof(vArgs),
                 &vSendCount, sizeof(vSendCount),
                 &vReturnBytes,
                 nullptr))
             {
+                printf("DeviceIoControl failed %d\n", ::GetLastError());
                 vDosCode = GetLastError();
                 break;
             }
 
             break;
         }
-        if (vDevice) CloseHandle(vDevice), vDevice = nullptr;
 
         return SetLastError(vDosCode), vSendCount;
     }

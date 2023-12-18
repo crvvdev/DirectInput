@@ -2,6 +2,7 @@
 
 namespace DirectInput
 {
+    extern HANDLE h_DeviceHandle;
 
     auto Initialize()
         -> HRESULT;
