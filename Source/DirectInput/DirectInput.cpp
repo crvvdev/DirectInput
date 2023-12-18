@@ -194,7 +194,7 @@ namespace DirectInput
         auto vContext = static_cast<DPCContext*>(nullptr);
         for (;;)
         {
-            vContext = (DPCContext*)ExAllocatePoolWithTag(NonPagedPool, sizeof(DPCContext), 'ItiD');
+            vContext = (DPCContext*)ExAllocatePoolWithTag(NonPagedPool, sizeof(DPCContext), DIRECT_INPUT_TAG);
             if (nullptr == vContext)
             {
                 vStatus = STATUS_INSUFFICIENT_RESOURCES;
@@ -238,7 +238,7 @@ namespace DirectInput
             if (aConsumed) *aConsumed = vContext->Consumed;
             break;
         }
-        if (vContext) ExFreePoolWithTag(vContext, 'ItiD'), vContext = nullptr;
+        if (vContext) ExFreePoolWithTag(vContext, DIRECT_INPUT_TAG), vContext = nullptr;
 
         return vStatus;
     }

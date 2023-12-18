@@ -5,8 +5,8 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-static constexpr wchar_t s_DevName[] = LR"(\Device\{ED0EB7DC-9BD5-4DD8-8B5F-24BBFBF31CF0})";
-static constexpr wchar_t s_SymName[] = LR"(\DosDevices\Global\{ED0EB7DC-9BD5-4DD8-8B5F-24BBFBF31CF0})";
+static constexpr wchar_t s_DevName[] = LR"(\Device\{27314068-3117-4371-B7A5-A1750281ED67})";
+static constexpr wchar_t s_SymName[] = LR"(\DosDevices\Global\{27314068-3117-4371-B7A5-A1750281ED67})";
 
 enum class IoCode : UINT32
 {
